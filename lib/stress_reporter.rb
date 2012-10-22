@@ -1,5 +1,6 @@
-require "stress_reporter/version"
+require 'stress_reporter/version'
+require 'logger'
+require 'timeout'
+require 'sys/cpu'
 
-module StressReporter
-  # Your code goes here...
-end
+module StressReporter ; end

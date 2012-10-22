@@ -1,15 +1,17 @@
 #!/usr/bin/env ruby
 
-require 'rubygems'
-require 'logger'
+require 'stress_reporter'
+require 'stress_reporter/checker'
+require 'stress_reporter/actions/xmanager'
 
 logger = Logger.new("/tmp/check_senato_status_#{Time.now.strftime('%Y.%d.%m')}.log")
-puts "Goingo to check on load avarage of #{StressReporter::Checker.load_avarage} against a limit of #{StressReporterChecker::LIMIT}"
+puts "Going to trigger when load average exceeds #{StressReporter::Checker::LIMIT}"
 
 while true do
   begin
     Timeout::timeout(3) do
       if StressReporter::Checker.go?
+        puts "Ecceduto!"
         StressReporter::Actions::Xmanager.report.each {|l|
           line = "#{Time.now.strftime('%Y/%d/%m %H:%M:%S')}\t#{StressReporter::Checker.load_average}\t#{ line }"
           puts line
@@ -18,6 +20,8 @@ while true do
       end
     end
   rescue Timeout::Error => ex
-    logger.error "#{Time.now.strftime('%Y/%d/%m %H:%M:%S')} Timeout Error!"
+    msg = "#{Time.now.strftime('%Y/%d/%m %H:%M:%S')} Timeout Error executing checks!!"
+    logger.error msg
+    puts msg
   end
 end
