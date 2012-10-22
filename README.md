@@ -1,26 +1,27 @@
 # StressReporter
 
-Daemon that runs and reports on stressful stuff
+Daemon that runs and reports on stressful stuff.
+Was born with specific needs but may be extended to cover more scenarios.
+Should help in understanding why a machine deserves to die.
 
-Was born with specific needs but may be extended to cover more scenarios
+## Notice
+
+See the version number? 0.0.1 - this is pre pre pre alpha, don't even
+think about using it in production.
 
 ## Installation
-
-Add this line to your application's Gemfile:
-
-    gem 'stress_reporter'
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
 
     $ gem install stress_reporter
 
 ## Usage
 
-TODO: Write usage instructions here
+    stress_reporter [avg]
+
+avg defaults to 1.0
+If load average exceeds avg, runs various checks (well, not that various
+for the time being, just a passenger-status specific one), and logs to
+/tmp/xxxx
+
 
 ## Contributing
 

@@ -10,7 +10,7 @@ Gem::Specification.new do |gem|
   gem.email         = ["loop23@gmail.com"]
   gem.description   = %q{Daemon that runs and reports on stressful stuff}
   gem.summary       = %q{Was born with specific needs but may be extended to cover more scenarios}
-  gem.homepage      = "https://"
+  gem.homepage      = "https://github.com/InteractSpa/stress_reporter"
 
   gem.files         = `git ls-files`.split($/)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
@@ -19,5 +19,8 @@ Gem::Specification.new do |gem|
 
   gem.add_runtime_dependency 'sys-cpu'
   gem.add_runtime_dependency 'passenger'
+  gem.add_runtime_dependency 'SystemTimer'
+
   gem.add_development_dependency 'rake'
+
 end
