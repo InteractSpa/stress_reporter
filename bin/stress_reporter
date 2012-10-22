@@ -1,0 +1,62 @@
+require 'rubygems'
+require 'sys/cpu'
+require 'logger'
+require 'timeout'
+
+class Checker
+  LIMIT = ARGV.empty? ? 1 : ARGV[0].to_f
+  @@load_avarage = 0
+  def self.go?
+    @@load_avarage = Sys::CPU.load_avg[1]
+    @@load_avarage > LIMIT
+  end
+  def self.load_avarage
+    @@load_avarage
+  end
+end
+
+class Xmanager
+  CMD = "passenger-status"
+  PID_REGEX = /PID: ([0-9]{1,})/
+
+  def self.pids
+    pids = []
+    p = IO.popen(CMD)
+    while !p.eof?
+      line = p.readpartial(1024)
+      m = line.scan PID_REGEX
+      pids = m.flatten
+    end
+    pids
+  end
+  
+  def self.current_requests
+    requests = {}
+    pids.each do |pid|
+      if File.exist?("/tmp/xm_last_url_for_#{pid}")
+        p = IO.popen("cat /tmp/xm_last_url_for_#{pid}")
+        while !p.eof?
+          requests[pid] = p.readpartial(1024)
+      	end
+      end
+    end
+    requests
+  end  
+end
+
+@logger = Logger.new("/tmp/check_senato_status_#{Time.now.strftime('%Y.%d.%m')}.log")
+puts "Goingo to check on load avarage of #{Checker.load_avarage} against a limit of #{Checker::LIMIT}"
+begin
+  Timeout::timeout(3) do
+  if Checker.go?
+    Xmanager.current_requests.each_pair do |pid, url|
+      line = "#{Time.now.strftime('%Y/%d/%m %H:%M:%S')}\tLA\t#{Checker.load_avarage}\tPID\t#{pid}\tREQUEST\t#{url}"
+      puts line 
+      @logger.warn line
+    end
+  end
+  end
+rescue Timeout::Error => ex
+  @logger.error "#{Time.now.strftime('%Y/%d/%m %H:%M:%S')} Timeout Error!"
+end
+
