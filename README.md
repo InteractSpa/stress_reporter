@@ -1,6 +1,8 @@
 # StressReporter
 
-TODO: Write a gem description
+Daemon that runs and reports on stressful stuff
+
+Was born with specific needs but may be extended to cover more scenarios
 
 ## Installation
 

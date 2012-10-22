@@ -6,14 +6,16 @@ require 'stress_reporter/version'
 Gem::Specification.new do |gem|
   gem.name          = "stress_reporter"
   gem.version       = StressReporter::VERSION
-  gem.authors       = ["Luca S.G. de Marinis"]
+  gem.authors       = ["Marcello Colacino", "Luca S.G. de Marinis"]
   gem.email         = ["loop23@gmail.com"]
-  gem.description   = %q{TODO: Write a gem description}
-  gem.summary       = %q{TODO: Write a gem summary}
-  gem.homepage      = ""
+  gem.description   = %q{Daemon that runs and reports on stressful stuff}
+  gem.summary       = %q{Was born with specific needs but may be extended to cover more scenarios}
+  gem.homepage      = "https://"
 
   gem.files         = `git ls-files`.split($/)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.require_paths = ["lib"]
+
+  gem.add_runtime_dependency 'sys-cpu'
 end
