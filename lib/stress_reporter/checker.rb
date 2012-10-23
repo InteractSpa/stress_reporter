@@ -13,7 +13,7 @@ class StressReporter::Checker
 
   # Returns true if limit exceeded. Sets @@load_average
   def self.go?
-    @@load_average = Sys::CPU.load_avg[0]
+    @@load_average = Sys::CPU.load_avg[0].to_f
     @@load_average > LIMIT
   end
 
