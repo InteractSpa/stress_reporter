@@ -4,31 +4,35 @@ require 'stress_reporter'
 require 'stress_reporter/checker'
 require 'stress_reporter/actions/xmanager'
 
-logger = Logger.new("/tmp/check_senato_status_#{Time.now.strftime('%Y.%d.%m')}.log")
+@_logger = Logger.new("/var/log/stress_report/monitor.log")
 puts "Going to trigger when load average exceeds #{StressReporter::Checker::LIMIT}"
 
 class MyTimeoutException < Exception ; end
 
+# Initial delay between checks
 @delay = 10.0;
+
+def log severity, msg
+  @_logger.send severity, msg
+  puts "#{ severity }: #{ msg }"
+end
+
 
 while true do
   begin
+    # Use custom exception so that we can treat it differenty
     SystemTimer.timeout_after(StressReporter::TIMEOUT, MyTimeoutException) do
       if StressReporter::Checker.go?
-        puts "Ecceduto!"
+        log(:warn, "Load average of #{ StressReporter::Checker::LIMIT } Exceeded: (#{ StressReporter::Checker.load_average }) - running checks")
         StressReporter::Actions::Xmanager.report.each {|l|
-          line = "#{Time.now.strftime('%Y/%d/%m %H:%M:%S')}\t#{StressReporter::Checker.load_average}\t#{ line }"
-          puts line
-          logger.info line
+          log(:info, l)
         }
       end
     end
     @delay = @delay - 1.0
   rescue MyTimeoutException
     @delay = @delay * 2
-    msg = "#{Time.now.strftime('%Y/%d/%m %H:%M:%S')} Timeout Error executing checks and reporting, doubling time between checks"
-    logger.error msg
-    puts msg
+    log(:error, "Timeout Error executing checks and reporting, machine is trashing, doubling time between checks to #{ @delay }")
   end
 
   if @delay > 60.0
@@ -36,6 +40,7 @@ while true do
   elsif @delay < 5.0
     @delay = 5.0
   end
-  puts "Sleeping for #@delay"
+  log(:debug, "Sleeping for #@delay")
   sleep @delay
 end
+

@@ -39,7 +39,7 @@ module StressReporter
           if File.exist?("/tmp/xm_last_url_for_#{pid}")
             p = IO.popen("cat /tmp/xm_last_url_for_#{pid}")
             while !p.eof?
-              requests[pid] = p.readpartial(1024)
+              requests[pid] = p.readpartial(1024).chomp
             end
           end
         end
