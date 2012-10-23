@@ -1,17 +1,18 @@
-
 module StressReporter
   module Actions
-    # Azioni da intraprendere per reportare su xmanager
+    # Azioni da intraprendere per reportare sullo stato di xmanager.
+    # Richieste correnti, loro url, pid etc.
+    # TODO: Non assumere che i files xm_last_url_for_{pid} siano in /tmp
     class Xmanager
 
       CMD = "passenger-status"
-      PID_REGEX = /PID: ([0-9]{1,})/
+      PID_REGEX = /PID:\s*(\d+)/
 
       # Report torna un array di stringhe
       def self.report
         out = []
         Xmanager.current_requests.each_pair do |pid, url|
-          out << "PID:\t#{pid}\tREQUEST:\t#{url}"
+          out << "PID:\t#{ pid }\tREQUEST:\t#{ url }"
         end
         out
       end

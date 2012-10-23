@@ -7,9 +7,13 @@ require 'stress_reporter/actions/xmanager'
 logger = Logger.new("/tmp/check_senato_status_#{Time.now.strftime('%Y.%d.%m')}.log")
 puts "Going to trigger when load average exceeds #{StressReporter::Checker::LIMIT}"
 
+class MyTimeoutException < Exception ; end
+
+@delay = 10.0;
+
 while true do
   begin
-    Timeout::timeout(3) do
+    SystemTimer.timeout_after(StressReporter::TIMEOUT, MyTimeoutException) do
       if StressReporter::Checker.go?
         puts "Ecceduto!"
         StressReporter::Actions::Xmanager.report.each {|l|
@@ -19,9 +23,19 @@ while true do
         }
       end
     end
-  rescue Timeout::Error => ex
-    msg = "#{Time.now.strftime('%Y/%d/%m %H:%M:%S')} Timeout Error executing checks!!"
+    @delay = @delay - 1.0
+  rescue MyTimeoutException
+    @delay = @delay * 2
+    msg = "#{Time.now.strftime('%Y/%d/%m %H:%M:%S')} Timeout Error executing checks and reporting, doubling time between checks"
     logger.error msg
     puts msg
   end
+
+  if @delay > 60.0
+    @delay = 60.0
+  elsif @delay < 5.0
+    @delay = 5.0
+  end
+  puts "Sleeping for #@delay"
+  sleep @delay
 end
