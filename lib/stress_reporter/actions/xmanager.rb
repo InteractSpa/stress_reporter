@@ -1,14 +1,15 @@
 module StressReporter
   module Actions
-    # Azioni da intraprendere per reportare sullo stato di xmanager.
-    # Richieste correnti, loro url, pid etc.
-    # TODO: Non assumere che i files xm_last_url_for_{pid} siano in /tmp
+    # Actions to report on passenger usage.
+    # Current requests, urls, pids
+    # TODO: We should not assume that xm_last_url_for_{pid} are in /tmp
+    # TODO: Spawning passenger-status is slow
     class Xmanager
 
       CMD = "passenger-status"
       PID_REGEX = /PID:\s*(\d+)/
 
-      # Report torna un array di stringhe
+      # Report returns a string array
       def self.report
         out = []
         Xmanager.current_requests.each_pair do |pid, url|
@@ -19,6 +20,7 @@ module StressReporter
 
       private
 
+      # Returns array of pids of current passenger processes
       def self.pids
         pids = []
         p = IO.popen(CMD)
@@ -30,6 +32,7 @@ module StressReporter
         pids
       end
 
+      # Returns hash { pid => url }
       def self.current_requests
         requests = {}
         pids.each do |pid|
