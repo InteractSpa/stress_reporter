@@ -22,7 +22,6 @@ module StressReporter
 
       # Returns array of pids of current passenger processes
       def self.pids
-        pids = []
         p = `#{ CMD }`
         p.scan(PID_REGEX).flatten
       end
@@ -35,7 +34,6 @@ module StressReporter
         end
         requests
       end
-
     end
   end
 end

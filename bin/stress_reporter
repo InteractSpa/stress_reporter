@@ -3,10 +3,13 @@
 require 'stress_reporter'
 require 'stress_reporter/checker'
 require 'stress_reporter/actions/xmanager'
+require 'stress_reporter/actions/free'
 
 @_logger = Logger.new("/var/log/stress_report/monitor.log")
-puts "Going to trigger when load average exceeds #{StressReporter::Checker::LIMIT}"
+puts "Going to trigger when load average exceeds #{ StressReporter::Checker::LIMIT }"
+VERBOSE = true
 
+# Define out own exception to raise in main loop
 class MyTimeoutException < Exception ; end
 
 # Initial delay between checks
@@ -14,7 +17,7 @@ class MyTimeoutException < Exception ; end
 
 def log severity, msg
   @_logger.send severity, msg
-  puts "#{ severity }: #{ msg }"
+  puts "#{ severity }: #{ msg }" if VERBOSE
 end
 
 
