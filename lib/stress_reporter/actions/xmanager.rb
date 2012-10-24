@@ -23,25 +23,15 @@ module StressReporter
       # Returns array of pids of current passenger processes
       def self.pids
         pids = []
-        p = IO.popen(CMD)
-        while !p.eof?
-          line = p.readpartial(1024)
-          m = line.scan PID_REGEX
-          pids = m.flatten
-        end
-        pids
+        p = `#{ CMD }`
+        p.scan(PID_REGEX).flatten
       end
 
       # Returns hash { pid => url }
       def self.current_requests
         requests = {}
         pids.each do |pid|
-          if File.exist?("/tmp/xm_last_url_for_#{pid}")
-            p = IO.popen("cat /tmp/xm_last_url_for_#{pid}")
-            while !p.eof?
-              requests[pid] = p.readpartial(1024).chomp
-            end
-          end
+          requests[pid] = File.read("/tmp/xm_last_url_for_#{ pid }").chomp
         end
         requests
       end

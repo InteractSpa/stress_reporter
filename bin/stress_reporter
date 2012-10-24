@@ -27,6 +27,9 @@ while true do
         StressReporter::Actions::Xmanager.report.each {|l|
           log(:info, l)
         }
+        StressReporter::Actions::Free.report.each {|l|
+          log(:info, l)
+        }
       end
     end
     @delay = @delay - 1.0
