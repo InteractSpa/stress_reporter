@@ -27,9 +27,11 @@ while true do
     SystemTimer.timeout_after(StressReporter::TIMEOUT, MyTimeoutException) do
       if StressReporter::Checker.go?
         log(:warn, "Load average of #{ StressReporter::Checker::LIMIT } Exceeded: (#{ StressReporter::Checker.load_average }) - running checks")
+        log(:info, "**** Xmanager ****")
         StressReporter::Actions::Xmanager.report.each {|l|
           log(:info, l)
         }
+        log(:info, "**** Free ****")
         StressReporter::Actions::Free.report.each {|l|
           log(:info, l)
         }

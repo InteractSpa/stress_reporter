@@ -8,7 +8,7 @@ module StressReporter
 
       # Report returns a string array
       def self.report
-        `free`
+        `free`.map(&:chomp)
       end
     end
   end
