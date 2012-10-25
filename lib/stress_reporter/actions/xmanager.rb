@@ -30,7 +30,8 @@ module StressReporter
       def self.current_requests
         requests = {}
         pids.each do |pid|
-          requests[pid] = File.read("/tmp/xm_last_url_for_#{ pid }").chomp
+          requests[pid] =
+            File.read("/tmp/xm_last_url_for_#{ pid }").chomp rescue "Not xmanager or fresh process"
         end
         requests
       end
