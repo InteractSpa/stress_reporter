@@ -18,9 +18,10 @@ Gem::Specification.new do |gem|
   gem.require_paths = ["lib"]
 
   gem.add_runtime_dependency 'sys-cpu'
-#  gem.add_runtime_dependency 'passenger'
   gem.add_runtime_dependency 'SystemTimer'
 
   gem.add_development_dependency 'rake'
+  gem.add_development_dependency 'yard'
+  gem.add_development_dependency 'redcarpet'
 
 end
