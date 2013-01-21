@@ -22,7 +22,7 @@ If load average exceeds avg, runs various checks (well, not that various
 for the time being, just a passenger-status specific one), and logs to
 /tmp/xxxx
 
-### Todo
+## Todo
 
  * Use the /proc filesystem instead of forking external programs
  * Add more config options
